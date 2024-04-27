@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 import logging
 
 
-class Extractor:
+class Extractor(object):
     def __init__(self, connection: _connection, redis_connection: Redis, result_handler: Callable):
         self.cursor = connection.cursor()
         self.result_handler = result_handler
