@@ -74,6 +74,6 @@ class State:
 
 
 if __name__ == "__main__":
-    red_storage = RedisStorage(Redis(host='localhost', port=6379))
+    red_storage = RedisStorage(Redis(host="localhost", port=6379))
     red_res = red_storage.retrieve_state()
     print(red_res)
