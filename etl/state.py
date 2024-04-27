@@ -71,3 +71,9 @@ class State:
     def get_state(self, key: str) -> Any:
         """Получить состояние по определённому ключу."""
         return self.storage.retrieve_state().get(key)
+
+
+if __name__ == "__main__":
+    red_storage = RedisStorage(Redis(host='localhost', port=6379))
+    red_res = red_storage.retrieve_state()
+    print(red_res)
