@@ -1,0 +1,18 @@
+services:
+#  docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" elasticsearch:8.6.2
+  els:
+    image: elasticsearch:8.6.2
+    environment:
+      discovery.type: "single-node"
+      xpack.security.enabled: "false"
+    ports:
+      - "9200:9200"
+
+  pg_db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: "movies_database"
+      POSTGRES_USER: "app"
+      POSTGRES_PASSWORD: "123qwe"
+    volumes:
+      - $HOME/postgresql/data2:/var/lib/postgresql/data
