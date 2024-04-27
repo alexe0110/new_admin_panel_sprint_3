@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 import logging
 
 
-class Extractor(object):
+class Extractor:
     def __init__(self, connection: _connection, redis_connection: Redis, result_handler: Callable):
         self.cursor = connection.cursor()
         self.result_handler = result_handler
@@ -34,6 +34,8 @@ class Extractor(object):
         result = self.cursor.fetchall()
         if result:
             modified = result[-1]["modified"]
+            print('dasd')
+            print(f"set_state(key={table}, value={modified})")
             self.state.set_state(key=table, value=modified)
             # todo: Разобраться зачем
             self.result_handler(
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     from connectors import PG_DSL, _pg_connection
 
     with _pg_connection(PG_DSL) as pg_conn:
-        # PostgresSaver(pg_conn, Redis(host='localhost', port=6379)).get_last_modified('genre')
+        # res = Extractor(pg_conn, Redis(host='localhost', port=6379), result_handler=lambda where_clause_table, pkeys: print(where_clause_table)).get_last_modified('genre')
         res = Extractor(
             pg_conn,
             Redis(host="localhost", port=6379),

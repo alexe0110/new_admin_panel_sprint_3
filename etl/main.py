@@ -7,11 +7,12 @@ logger = logging.getLogger(__name__)
 
 settings = Settings()
 
-def main(conn):
+
+def main(pg_conn):
     extractor = Extractor(
-        connection=conn,  # todo не уверен сработает ли
-        redis_connection=Redis(settings.redis_settings),
-        result_handler=lambda x: print(x)
+        connection=pg_conn,  # todo не уверен сработает ли
+        redis_connection=Redis(**settings.redis_settings.model_dump()),
+        result_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys)
     )
 
     for entity in settings.entities:
@@ -20,6 +21,7 @@ def main(conn):
 
 if __name__ == '__main__':
     logger.info('Starting ETL')
+
     while True:
         with _pg_connection(settings.postgres.model_dump()) as pg_connection:
             main(pg_connection)
