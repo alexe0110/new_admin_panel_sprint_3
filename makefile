@@ -1,6 +1,6 @@
 VENV ?= .venv
 LINE_LENGTH ?= 120
-LINT_DIRS = movies config
+LINT_DIRS = etl
 
 init:
 	python3.11 -m venv .venv

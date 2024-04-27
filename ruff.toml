@@ -1,0 +1,31 @@
+line-length = 120
+target-version = "py311"
+# Файлы которые игнорировать.
+#extend-exclude = ["movies/migrations", "kek_orm.py"]
+
+
+[lint]
+select = [
+    # https://docs.astral.sh/ruff/rules/
+    # pycodestyle
+    "E",
+    "W",
+    # to check McCabe complexity.
+    "C",
+    # quotes
+    "Q",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # pytest
+    "PT",
+    # pep8-naming (N)
+    "N"
+]
