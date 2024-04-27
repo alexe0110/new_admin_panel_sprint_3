@@ -2,7 +2,6 @@ import abc
 import json
 import logging
 import pickle
-from collections.abc import Callable
 from typing import Any
 
 from redis import Redis
@@ -42,38 +41,20 @@ class JsonFileStorage(BaseStorage):
 
 
 class RedisStorage(BaseStorage):
-    def __init__(self, connection_settings: dict) -> None:
-        """RedisStorage class constructor.
-
-        Args:
-            dict: storage connection settings.
-
-        """
-        self.connection_settings = connection_settings
-        self._connect()
-
-    # @backoff()
-    def _connect(self):
-        self.redis_adapter = Redis(**self.connection_settings)
-        self.redis_adapter.ping()
-
-    # @backoff_reconnect()
-    def try_command(self, func: Callable, *args, **kwargs) -> Any:
-        return func(*args, **kwargs)
+    def __init__(self, redis_adapter: Redis) -> None:
+        self.redis_adapter = redis_adapter
 
     def save_state(self, state: dict) -> None:
         for key, value in state.items():
-            self.try_command(self.redis_adapter.set, name=key, value=pickle.dumps(value))
+            self.redis_adapter.set(name=key, value=pickle.dumps(value))
 
     def retrieve_state(self) -> dict:
         state = {}
-        keys = self.try_command(self.redis_adapter.keys, "*")
+        keys = self.redis_adapter.keys()
         for key in keys:
-            value = self.try_command(self.redis_adapter.get, key)
-            try:
-                state[key.decode("utf-8")] = pickle.loads(value)
-            except pickle.UnpicklingError:
-                state[key.decode("utf-8")] = value.decode("utf-8") if value else None
+            value = self.redis_adapter.get(key)
+            state[key.decode("utf-8")] = pickle.loads(value)
+
         return state
 
 
@@ -90,16 +71,3 @@ class State:
     def get_state(self, key: str) -> Any:
         """Получить состояние по определённому ключу."""
         return self.storage.retrieve_state().get(key)
-
-
-if __name__ == "__main__":
-    storage = JsonFileStorage("state.json")
-    res = storage.retrieve_state()
-    storage.save_state({"dsa": "dsadsdd"})
-    print(res)
-    print("======================================================")
-
-    red_storage = RedisStorage(connection_settings={"host": "localhost", "port": 6379})
-    red_storage.save_state({"kek": "lol"})
-    red_res = red_storage.retrieve_state()
-    print(red_res)
