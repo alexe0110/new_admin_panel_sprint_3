@@ -63,6 +63,7 @@ class State:
 
     def __init__(self, storage: BaseStorage) -> None:
         self.storage = storage
+        self.state = self.storage.retrieve_state()
 
     def set_state(self, key: str, value: Any) -> None:
         """Установить состояние для определённого ключа."""

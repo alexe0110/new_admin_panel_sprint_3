@@ -75,20 +75,23 @@ class Enricher(object):
             where_clause_table=Identifier(where_clause_table),
         )
 
-        while query_result := self.pg.retry_fetchall(
-            query,
-            pkeys=tuple(pkeys),
-            last_id=self.state.get_state('last_processed_id') or '',
-            page_size=self.page_size,
-        ):
+        self.cursor.execute(query,
+                            {
+                                "pkeys": tuple(pkeys),
+                                "last_id": self.state.get_state('last_processed_id') or '',
+                                "page_size": self.page_size,
+                            })
+        results = self.cursor.fetchall()
+
+        for result in results:
             self.set_state(
                 table=where_clause_table,
                 pkeys=pkeys,
-                last_processed_id=query_result[-1]['id'],
+                last_processed_id=result[-1]['id'],
                 page_size=self.page_size,
             )
-            logger.debug('Got additional info for %s  movies', len(query_result))
-            self.result_handler(query_result)
+            logger.debug('Got additional info for %s  movies', len(result))
+            self.result_handler(result)
 
         self.set_state(
             table=None,
