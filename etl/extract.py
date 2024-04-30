@@ -11,7 +11,6 @@ from redis import Redis
 from etl import sql_templates, state
 
 logger = logging.getLogger(__name__)
-import logging
 
 
 class Extractor:
