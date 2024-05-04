@@ -1,5 +1,6 @@
 import logging
 from etl.extract import Extractor
+from etl.enricher import Enricher
 from etl.config import Settings
 from connectors import PG_DSL, _pg_connection
 from redis import Redis
@@ -9,10 +10,18 @@ settings = Settings()
 
 
 def main(pg_conn):
+
+    enricher = Enricher(
+        connection=pg_conn,
+        redis_connection=Redis(**settings.redis_settings.model_dump()),
+        result_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys),
+        page_size=settings.page_size,
+    )
+
     extractor = Extractor(
         connection=pg_conn,  # todo не уверен сработает ли
         redis_connection=Redis(**settings.redis_settings.model_dump()),
-        result_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys)
+        result_handler=enricher.proccess
     )
 
     for entity in settings.entities:
