@@ -18,6 +18,5 @@ plint:
 	    --explicit-package-bases $(LINT_DIRS) --disable-error-code import-untyped --exclude movies/migrations
 
 
-
 docker-run:
 	docker-compose up -d --build

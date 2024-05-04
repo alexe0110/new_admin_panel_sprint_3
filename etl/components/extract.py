@@ -33,10 +33,7 @@ class Extractor:
         result = self.cursor.fetchall()
         if result:
             modified = result[-1]["modified"]
-            print('dasd')
-            print(f"set_state(key={table}, value={modified})")
             self.state.set_state(key=table, value=modified)
-            # todo: Разобраться зачем
             self.result_handler(
                 where_clause_table=table,
                 pkeys=[record["id"] for record in result],
@@ -53,4 +50,3 @@ if __name__ == "__main__":
             Redis(host="localhost", port=6379),
             result_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys),
         ).extract_by_time(table="genre")
-        print(res)

@@ -8,3 +8,7 @@
 
     make init
 
+Запуск:
+
+    make docker-run
+
