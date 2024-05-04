@@ -84,10 +84,15 @@ class Enricher(object):
         results = self.cursor.fetchall()
 
         for result in results:
+            print('Result: ', result)
+            print('Result[id]: ', result['id'])
+            for i in result:
+                print('\t - ', i)
+            print('Result[-1]: ', result[-1])
             self.set_state(
                 table=where_clause_table,
                 pkeys=pkeys,
-                last_processed_id=result[-1]['id'],
+                last_processed_id=result['id'],
                 page_size=self.page_size,
             )
             logger.debug('Got additional info for %s  movies', len(result))

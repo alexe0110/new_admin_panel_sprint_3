@@ -18,6 +18,8 @@ pydantic = "^2.7.1"
 pydantic-settings = "^2.2.1"
 redis = "^5.0.4"
 psycopg2-binary = "^2.9.9"
+elasticsearch = "^8.13.1"
+annotated-types = "^0.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

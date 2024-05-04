@@ -1,7 +1,7 @@
 from typing import Set
 from pydantic import Field
 from pydantic_settings import BaseSettings
-
+from index_schema import movies_schema
 
 class PostgresSettings(BaseSettings):
     """Postgres connection settings."""
@@ -26,11 +26,23 @@ class RedisSettings(BaseSettings):
         env_prefix = 'REDIS_'
 
 
+class ElasticsearchConnection(BaseSettings):
+    """Elasticsearch connection settings."""
+    hosts: str = Field('http://localhost:9200', env='ES_HOST')
+
+
+class ElasticsearchSettings(BaseSettings):
+    """Elasticsearch index settings."""
+    connection: ElasticsearchConnection = ElasticsearchConnection()
+    index: str = 'movies'
+    index_schema: dict = movies_schema
+
+
 class Settings(BaseSettings):
     """Project settings."""
 
     postgres: PostgresSettings = PostgresSettings()
-    # es: ElasticsearchSettings = ElasticsearchSettings()
+    es: ElasticsearchSettings = ElasticsearchSettings()
     redis_settings: RedisSettings = RedisSettings()
     delay: int = 1
     page_size: int = 1000
