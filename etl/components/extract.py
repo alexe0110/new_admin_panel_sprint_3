@@ -44,7 +44,8 @@ if __name__ == "__main__":
     from connectors import PG_DSL, _pg_connection
 
     with _pg_connection(PG_DSL) as pg_conn:
-        # res = Extractor(pg_conn, Redis(host='localhost', port=6379), result_handler=lambda where_clause_table, pkeys: print(where_clause_table)).get_last_modified('genre')
+        # res = Extractor(pg_conn, Redis(host='localhost', port=6379),
+        # result_handler=lambda where_clause_table, pkeys: print(where_clause_table)).get_last_modified('genre')
         res = Extractor(
             pg_conn,
             Redis(host="localhost", port=6379),

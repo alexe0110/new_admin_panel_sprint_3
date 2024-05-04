@@ -1,18 +1,18 @@
 """Enrich data process."""
 
 import logging
-from logging.config import dictConfig
-from typing import Callable
+from collections.abc import Callable
+
+from psycopg2.extensions import connection as _connection
+from psycopg2.sql import SQL, Identifier
+from redis import Redis
 
 from etl import sql_templates, state
-from psycopg2.sql import SQL, Identifier
-from psycopg2.extensions import connection as _connection
-from redis import Redis
 
 logger = logging.getLogger(__name__)
 
 
-class Enricher(object):
+class Enricher:
     """Implement getting additional information about movies.
 
     Attributes:
@@ -24,7 +24,9 @@ class Enricher(object):
 
     """
 
-    def __init__(self, connection: _connection, redis_connection: Redis, result_handler: Callable, page_size: int = 100) -> None:
+    def __init__(
+        self, connection: _connection, redis_connection: Redis, result_handler: Callable, page_size: int = 100
+    ) -> None:
         """Enricher class constructor.
 
         Args:
@@ -42,12 +44,12 @@ class Enricher(object):
 
     def proceed(self) -> None:
         """Check the state and proceed to work if there is data in the cashe."""
-        if self.state.state.get('pkeys'):
-            logger.debug('Data to proceed %s', self.state.state.get('pkeys'))
+        if self.state.state.get("pkeys"):
+            logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
             self.proccess(
-                self.state.state['table'],
-                self.state.state['pkeys'],
-                self.state.state['page_size'],
+                self.state.state["table"],
+                self.state.state["pkeys"],
+                self.state.state["page_size"],
             )
 
     def set_state(self, **kwargs) -> None:
@@ -69,33 +71,35 @@ class Enricher(object):
 
         """
 
-        logger.debug('Select all movies data by %s', where_clause_table)
+        logger.debug("Select all movies data by %s", where_clause_table)
 
         query = SQL(sql_templates.get_movie_info_by_id).format(
             where_clause_table=Identifier(where_clause_table),
         )
 
-        self.cursor.execute(query,
-                            {
-                                "pkeys": tuple(pkeys),
-                                "last_id": self.state.get_state('last_processed_id') or '',
-                                "page_size": self.page_size,
-                            })
+        self.cursor.execute(
+            query,
+            {
+                "pkeys": tuple(pkeys),
+                "last_id": self.state.get_state("last_processed_id") or "",
+                "page_size": self.page_size,
+            },
+        )
         results = self.cursor.fetchall()
 
         for result in results:
-            print('Result: ', result)
-            print('Result[id]: ', result['id'])
+            print("Result: ", result)
+            print("Result[id]: ", result["id"])
             for i in result:
-                print('\t - ', i)
-            print('Result[-1]: ', result[-1])
+                print("\t - ", i)
+            print("Result[-1]: ", result[-1])
             self.set_state(
                 table=where_clause_table,
                 pkeys=pkeys,
-                last_processed_id=result['id'],
+                last_processed_id=result["id"],
                 page_size=self.page_size,
             )
-            logger.debug('Got additional info for %s  movies', len(result))
+            logger.debug("Got additional info for %s  movies", len(result))
             self.result_handler(result)
 
         self.set_state(

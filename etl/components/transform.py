@@ -1,14 +1,15 @@
 import logging
-from typing import Callable
-from redis import Redis
-from etl import sql_templates, state
-from etl.models import Person, Movie
+from collections.abc import Callable
 
+from redis import Redis
+
+from etl import state
+from etl.models import Movie, Person
 
 logger = logging.getLogger(__name__)
 
 
-class Transformer(object):
+class Transformer:
     """Implement transform data to Elasticksearch index schema format.
 
     Attributes:
@@ -35,10 +36,10 @@ class Transformer(object):
     def proceed(self) -> None:
         """Check the state and proceed to work if there is data in the cashe."""
 
-        if self.state.state.get('data'):
-            logger.debug('Data to proceed %s', self.state.state.get('data'))
+        if self.state.state.get("data"):
+            logger.debug("Data to proceed %s", self.state.state.get("data"))
             self.proccess(
-                movies=self.state.state.get('data'),
+                movies=self.state.state.get("data"),
             )
 
     def set_state(self, **kwargs) -> None:
@@ -60,9 +61,9 @@ class Transformer(object):
 
         """
         if played_roles:
-            return [person['name'] for person in persons if person['role'] in played_roles]
+            return [person["name"] for person in persons if person["role"] in played_roles]
         else:
-            return [person['name'] for person in persons]
+            return [person["name"] for person in persons]
 
     def persons_by_role(self, persons: dict, played_roles: list = None) -> dict:
         """Get list of persons info.
@@ -73,7 +74,7 @@ class Transformer(object):
 
         """
         if played_roles:
-            return [Person(**person).dict() for person in persons if person['role'] in played_roles]
+            return [Person(**person).dict() for person in persons if person["role"] in played_roles]
         else:
             return [Person(**person).dict() for person in persons]
 
@@ -84,18 +85,18 @@ class Transformer(object):
             movies: movies data to transform.
 
         """
-        self.set_state(data=[movie for movie in movies])
+        self.set_state(data=list(movies))
         for idx, movie in enumerate(movies):
             try:
                 movies[idx] = Movie(
                     **movies[idx],
-                    director=self.get_person_names(movie['persons'], ['director']),
-                    actors_names=self.get_person_names(movie['persons'], ['actor']),
-                    writers_names=self.get_person_names(movie['persons'], ['writer']),
-                    actors=self.persons_by_role(movie['persons'], ['actor']),
-                    writers=self.persons_by_role(movie['persons'], ['writer']),
+                    director=self.get_person_names(movie["persons"], ["director"]),
+                    actors_names=self.get_person_names(movie["persons"], ["actor"]),
+                    writers_names=self.get_person_names(movie["persons"], ["writer"]),
+                    actors=self.persons_by_role(movie["persons"], ["actor"]),
+                    writers=self.persons_by_role(movie["persons"], ["writer"]),
                 ).dict(by_alias=True)
             except Exception:
-                logger.exception('Validation data error: %s', movies[idx])
+                logger.exception("Validation data error: %s", movies[idx])
         self.set_state(data=None)
         self.result_handler(movies)
