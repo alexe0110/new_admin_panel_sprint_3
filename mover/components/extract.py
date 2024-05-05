@@ -9,6 +9,7 @@ import logging
 from redis import Redis
 from mover.my_log import logger
 import psycopg2
+from psycopg2.extras import RealDictCursor, DictCursor
 
 
 class Extract:
@@ -26,9 +27,11 @@ class Extract:
     def __init__(self, pg_settings: dict):
         self.pg_settings = pg_settings
         self._connect()
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
 
     def kek(self):
         query = 'select * from content.genre;'
         self.cursor.execute(query)
         result = self.cursor.fetchall()
+
+        return result
