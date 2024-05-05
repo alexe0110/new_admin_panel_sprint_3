@@ -1,15 +1,6 @@
-import pytest
 from psycopg2.extras import RealDictRow
 
 from mover.components.extract import Extract
-from mover.config import Settings
-
-test_settings = Settings()
-
-
-@pytest.fixture()
-def pg_extractor():
-    return Extract(pg_settings=test_settings.pg.model_dump())
 
 
 def test_extract_kek(pg_extractor: Extract):
