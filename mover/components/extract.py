@@ -13,7 +13,6 @@ import psycopg2
 
 class Extract:
     def _connect(self) -> None:
-        """PG connection function with backoff wrapper."""
         logger.debug(
             'Connecting to the DB %s. Timeout %s',
             self.pg_settings['dbname'],
@@ -27,7 +26,9 @@ class Extract:
     def __init__(self, pg_settings: dict):
         self.pg_settings = pg_settings
         self._connect()
+        self.cursor = self.connection.cursor()
 
-
-if __name__ == '__main__':
-    ex = Extract()
+    def kek(self):
+        query = 'select * from content.genre;'
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
