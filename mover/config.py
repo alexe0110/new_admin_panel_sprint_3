@@ -14,5 +14,17 @@ class PGSettings(BaseSettings):
         env_prefix = "DB_"
 
 
+class RedisSettings(BaseSettings):
+    """Redis connection settings."""
+
+    host: str = Field("127.0.0.1")
+    port: int = Field(6379)
+
+    class Config:
+        env_prefix = "REDIS_"
+
+
 class Settings(BaseSettings):
     pg: PGSettings = PGSettings()
+    redis_settings: RedisSettings = RedisSettings()
+
