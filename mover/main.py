@@ -8,15 +8,16 @@ ETL состоит из 4х частей
 Для каждой из частей есть кэширование в редисе
 Настройки в config.py
 """
-from mover.my_log import logger
+
 from mover.config import Settings
+from mover.my_log import logger
 
 settings = Settings()
 
 
 def main():
-    logger.info('Prepare to ETL')
+    logger.info("Prepare to ETL")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

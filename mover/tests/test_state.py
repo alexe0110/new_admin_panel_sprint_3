@@ -1,10 +1,10 @@
 import pytest
+from redis import Redis
+
 from mover.config import Settings
 from mover.state import RedisStorage
 
-from redis import  Redis
-
-test_settings=Settings()
+test_settings = Settings()
 
 
 @pytest.fixture()
@@ -13,7 +13,7 @@ def storage() -> RedisStorage:
 
 
 def test_state(storage: RedisStorage):
-    storage.save_state({'kek':'lol'})
+    storage.save_state({"kek": "lol"})
     red_res = storage.retrieve_state()
-    assert red_res.get('kek') == 'lol'
-    print('red_res', red_res)
+    assert red_res.get("kek") == "lol"
+    print("red_res", red_res)

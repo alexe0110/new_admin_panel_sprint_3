@@ -1,5 +1,5 @@
-from pydantic_settings import BaseSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class PGSettings(BaseSettings):
@@ -15,10 +15,8 @@ class PGSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    """Redis connection settings."""
-
-    host: str = Field("127.0.0.1")
-    port: int = Field(6379)
+    host: str = Field(default="127.0.0.1")
+    port: int = Field(default=6379)
 
     class Config:
         env_prefix = "REDIS_"
@@ -27,4 +25,3 @@ class RedisSettings(BaseSettings):
 class Settings(BaseSettings):
     pg: PGSettings = PGSettings()
     redis_settings: RedisSettings = RedisSettings()
-
