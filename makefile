@@ -1,6 +1,6 @@
 VENV ?= .venv
 LINE_LENGTH ?= 120
-LINT_DIRS = etl
+LINT_DIRS = mover
 
 init:
 	python3.11 -m venv .venv
