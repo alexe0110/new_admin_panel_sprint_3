@@ -1,6 +1,5 @@
-"""
+""" """
 
-"""
 
 class Load:
     pass

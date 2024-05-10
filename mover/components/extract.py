@@ -6,12 +6,16 @@ Extract должен:
 - сохранять в редис дату modified последней обработаной записи
 """
 
+import datetime
+
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from psycopg2.sql import SQL
 from redis import Redis
 
 from mover.my_log import logger
 from mover.state import RedisStorage, State
+from mover.utils.sql_templates import get_modified_records
 
 
 class Extract:
@@ -35,8 +39,19 @@ class Extract:
         self.state = State(self.storage)
 
     def kek(self):
-        query = "select * from content.genre;"
+        query: SQL = SQL("select * from content.genre;")
         self.cursor.execute(query)
         result = self.cursor.fetchall()
 
         return result
+
+    def get_last_modified(self, table: str):
+        modified_date = self.state.get_state(table)
+        if modified_date:
+            return modified_date
+        return datetime.date.min
+
+    def extract_data(self, table: str, size: int = 100):
+        query: SQL = SQL(get_modified_records.format(table=f"content.{table}"))
+
+        self.cursor.execute(query)
