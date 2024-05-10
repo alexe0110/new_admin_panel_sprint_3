@@ -1,7 +1,7 @@
 import pytest
 from redis import Redis
 
-from mover.components.extract import Extract
+from mover.components import Extract, Enricher
 from mover.config import Settings
 from mover.state import RedisStorage
 
@@ -23,7 +23,16 @@ def pg_extractor(redis_connection):
     return Extract(
         pg_settings=test_settings.pg.model_dump(),
         redis_connection=redis_connection,
-        next_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys),
+        next_handler=lambda where_clause_table, pkeys: print('Test Extract handler, with args:', where_clause_table, pkeys),
+    )
+
+
+@pytest.fixture()
+def pg_enricher(redis_connection):
+    return Enricher(
+        pg_settings=test_settings.pg.model_dump(),
+        redis_connection=redis_connection,
+        next_handler=lambda result: print('Test Enricher handler, with result:', result),
     )
 
 
