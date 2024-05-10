@@ -41,21 +41,16 @@ class Extract:
 
         self.next_handler = next_handler
 
-    def kek(self):
-        query: SQL = SQL("select * from content.genre;")
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-
-        return result
-
     def get_last_modified(self, table: str) -> datetime.date:
         modified_date = self.state.get_state(table)
-        print("modified_date", modified_date)
+
         if modified_date:
             return modified_date
         return datetime.date.min
 
     def extract_data(self, table: str, schema: str = "content", size: int = 100) -> None:
+        logger.debug("Getting modified from %s", table)
+
         query = SQL(get_modified_records).format(
             table=Identifier(schema, table),
         )
@@ -63,6 +58,7 @@ class Extract:
         self.cursor.execute(query, {"modified": self.get_last_modified(table), "page_size": size})
         result = self.cursor.fetchall()
 
+        logger.debug("Got %s records from table %s", len(result), table)
         if result:
             modified = result[-1]["modified"]
             self.state.set_state(key=table, value=modified)
