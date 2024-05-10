@@ -7,6 +7,7 @@ Extract должен:
 """
 
 import datetime
+from collections.abc import Callable
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -30,13 +31,15 @@ class Extract:
 
         logger.debug("Connected to the DB %s", self.pg_settings["dbname"])
 
-    def __init__(self, pg_settings: dict, redis_connection: Redis):
+    def __init__(self, pg_settings: dict, redis_connection: Redis, next_handler: Callable):
         self.pg_settings = pg_settings
         self._connect()
         self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
 
         self.storage = RedisStorage(redis_connection)
         self.state = State(self.storage)
+
+        self.next_handler = next_handler
 
     def kek(self):
         query: SQL = SQL("select * from content.genre;")
@@ -63,3 +66,7 @@ class Extract:
         if result:
             modified = result[-1]["modified"]
             self.state.set_state(key=table, value=modified)
+            self.next_handler(
+                where_clause_table=table,
+                pkeys=[record["id"] for record in result],
+            )
