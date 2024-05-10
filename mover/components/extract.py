@@ -2,7 +2,7 @@
 Extract должен:
 - читать данные пачками;
 - спокойно переживать падение PostgreSQL;
-- начинать читать с последней обработанной записи.
+- начинать читать с последней обработанной записи. путем сохранения modified в редис
 - сохранять в редис дату modified последней обработаной записи
 """
 
@@ -10,7 +10,7 @@ import datetime
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from psycopg2.sql import SQL
+from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
 from mover.my_log import logger
@@ -45,13 +45,21 @@ class Extract:
 
         return result
 
-    def get_last_modified(self, table: str):
+    def get_last_modified(self, table: str) -> datetime.date:
         modified_date = self.state.get_state(table)
+        print("modified_date", modified_date)
         if modified_date:
             return modified_date
         return datetime.date.min
 
-    def extract_data(self, table: str, size: int = 100):
-        query: SQL = SQL(get_modified_records.format(table=f"content.{table}"))
+    def extract_data(self, table: str, schema: str = "content", size: int = 100) -> None:
+        query = SQL(get_modified_records).format(
+            table=Identifier(schema, table),
+        )
 
-        self.cursor.execute(query)
+        self.cursor.execute(query, {"modified": self.get_last_modified(table), "page_size": size})
+        result = self.cursor.fetchall()
+
+        if result:
+            modified = result[-1]["modified"]
+            self.state.set_state(key=table, value=modified)

@@ -21,3 +21,11 @@ def redis_storage(redis_connection) -> RedisStorage:
 @pytest.fixture()
 def pg_extractor(redis_connection):
     return Extract(pg_settings=test_settings.pg.model_dump(), redis_connection=redis_connection)
+
+
+@pytest.fixture(autouse=False)
+def _clean_redis(redis_connection: Redis):
+    for db_in in range(15):
+        with redis_connection as con:
+            con.select(db_in)
+            con.flushall()
