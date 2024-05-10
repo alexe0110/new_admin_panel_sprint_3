@@ -8,7 +8,7 @@ class PGSettings(BaseSettings):
     dbname: str = Field(default="movies_database")
     user: str = Field(default="app")
     password: str = Field(default="123qwe")
-    connect_timeout: int = 1
+    connect_timeout: int = 3
 
     class Config:
         env_prefix = "DB_"

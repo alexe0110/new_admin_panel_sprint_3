@@ -2,8 +2,6 @@
 Enricher добавляет инфу о фильме и передает результат дальше
 """
 
-
-import datetime
 from collections.abc import Callable
 
 import psycopg2
@@ -40,9 +38,9 @@ class Enricher:
         self.size = size
 
     def proceed(self) -> None:
-        if self.state.state.get('pkeys'):
-            logger.debug('Data to proceed %s', self.state.state.get('pkeys'))
-            self.enrich_data()
+        if self.state.state.get("pkeys"):
+            logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
+            self.enrich_data() # todo !!!!!!
 
     def set_state(self, **kwargs) -> None:
         for key, value in kwargs.items():
@@ -53,28 +51,23 @@ class Enricher:
 
         self.cursor.execute(
             query,
-            {
-                'pkeys': tuple(pkeys),
-                'last_id': self.state.get_state('last_processed_id') or "",
-                'page_size': self.size
-            }
+            {"pkeys": tuple(pkeys), "last_id": self.state.get_state("last_processed_id") or "", "page_size": self.size},
         )
-        results = self.cursor.fetchall()
 
-        for result in results:
+        while result := self.cursor.fetchall():
             self.set_state(
                 table=where_clause_table,
                 pkeys=pkeys,
-                last_processed_id=result[-1]['id'],
+                last_processed_id=result[-1]["id"],
                 page_size=self.size,
             )
 
-            logger.debug('Got additional info for %s  movies', len(result))
+            logger.debug("Got additional info for %s  movies", len(result))
             self.next_handler(result)
 
-        self.set_state(
-            table=None,
-            pkeys=None,
-            last_processed_id=None,
-            page_size=None,
-        )
+        # self.set_state(
+        #     table=None,
+        #     pkeys=None,
+        #     last_processed_id=None,
+        #     page_size=None,
+        # )
