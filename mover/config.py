@@ -25,3 +25,4 @@ class RedisSettings(BaseSettings):
 class Settings(BaseSettings):
     pg: PGSettings = PGSettings()
     redis_settings: RedisSettings = RedisSettings()
+    tables: list = ["film_work", "person", "genre"]

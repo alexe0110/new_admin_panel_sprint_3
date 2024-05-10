@@ -20,8 +20,11 @@ def redis_storage(redis_connection) -> RedisStorage:
 
 @pytest.fixture()
 def pg_extractor(redis_connection):
-    return Extract(pg_settings=test_settings.pg.model_dump(), redis_connection=redis_connection,
-                   next_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys))
+    return Extract(
+        pg_settings=test_settings.pg.model_dump(),
+        redis_connection=redis_connection,
+        next_handler=lambda where_clause_table, pkeys: print(where_clause_table, pkeys),
+    )
 
 
 @pytest.fixture(autouse=False)
