@@ -37,6 +37,8 @@ class Enricher:
         self.next_handler = next_handler
         self.size = size
 
+        self.proceed()
+
     def proceed(self) -> None:
         if self.state.state.get("pkeys"):
             logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
