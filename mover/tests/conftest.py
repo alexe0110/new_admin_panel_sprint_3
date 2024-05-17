@@ -9,23 +9,13 @@ test_settings = Settings()
 
 
 @pytest.fixture()
-def redis_connection():
-    return Redis(**test_settings.redis_settings.model_dump())
-
-
-@pytest.fixture()
-def redis_connection_enricher():
-    return Redis(**test_settings.redis_settings.model_dump(), db=1)
+def redis_connection(redis_db: int=0):
+    return Redis(**test_settings.redis_settings.model_dump(), db=redis_db)
 
 
 @pytest.fixture()
 def redis_storage(redis_connection) -> RedisStorage:
     return RedisStorage(redis_connection)
-
-
-@pytest.fixture()
-def redis_storage_enrich(redis_connection_enricher) -> RedisStorage:
-    return RedisStorage(redis_connection_enricher)
 
 
 @pytest.fixture()
@@ -40,10 +30,10 @@ def pg_extractor(redis_connection):
 
 
 @pytest.fixture()
-def pg_enricher(redis_connection_enricher):
+def pg_enricher(redis_connection):
     return Enricher(
         pg_settings=test_settings.pg.model_dump(),
-        redis_connection=redis_connection_enricher,
+        redis_connection=redis_connection,
         next_handler=lambda result: print("Test Enricher handler, with result:", result),
     )
 
