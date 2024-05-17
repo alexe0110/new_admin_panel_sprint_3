@@ -40,7 +40,10 @@ class Enricher:
     def proceed(self) -> None:
         if self.state.state.get("pkeys"):
             logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
-            self.enrich_data() # todo !!!!!!
+            self.enrich_data(
+                self.state.state['table'],
+                self.state.state['pkeys']
+            )
 
     def set_state(self, **kwargs) -> None:
         for key, value in kwargs.items():
@@ -65,9 +68,9 @@ class Enricher:
             logger.debug("Got additional info for %s  movies", len(result))
             self.next_handler(result)
 
-        # self.set_state(
-        #     table=None,
-        #     pkeys=None,
-        #     last_processed_id=None,
-        #     page_size=None,
-        # )
+        self.set_state(
+            table=None,
+            pkeys=None,
+            last_processed_id=None,
+            page_size=None,
+        )
