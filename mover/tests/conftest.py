@@ -1,7 +1,7 @@
 import pytest
 from redis import Redis
 
-from mover.components import Enricher, Extract
+from mover.components import Enricher, Extract, Transform
 from mover.config import Settings
 from mover.state import RedisStorage
 
@@ -9,7 +9,7 @@ test_settings = Settings()
 
 
 @pytest.fixture()
-def redis_connection(redis_db: int=0):
+def redis_connection(redis_db: int | None):
     return Redis(**test_settings.redis_settings.model_dump(), db=redis_db)
 
 
@@ -35,6 +35,14 @@ def pg_enricher(redis_connection):
         pg_settings=test_settings.pg.model_dump(),
         redis_connection=redis_connection,
         next_handler=lambda result: print("Test Enricher handler, with result:", result),
+    )
+
+
+@pytest.fixture()
+def transformer(redis_connection):
+    return Transform(
+        redis_connection=redis_connection,
+        next_handler=lambda movies_for_es: print("\nTest Transformer handler, with movies_for_es:", movies_for_es),
     )
 
 

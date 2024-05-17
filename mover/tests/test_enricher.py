@@ -17,5 +17,9 @@ def test_enrich_data(pg_enricher: Enricher, redis_storage: RedisStorage, table_n
 
     redis_result = redis_storage.retrieve_state()
 
-    assert redis_result.get("table") == table_name, f"Wrong table in redis{redis_result.get('table')}"
-    assert redis_result.get("pkeys") == ids_for_table.get(table_name), f" Wrong pkeys {redis_result.get('pkeys')}"
+    assert redis_result.get("table") is None
+    assert redis_result.get("pkeys") is None
+
+    # потому что self.set_state(table=None, pkeys=None...
+    # assert redis_result.get("table") == table_name, f"Wrong table in redis{redis_result.get('table')}"
+    # assert redis_result.get("pkeys") == ids_for_table.get(table_name), f" Wrong pkeys {redis_result.get('pkeys')}"

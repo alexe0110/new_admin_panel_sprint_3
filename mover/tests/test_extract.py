@@ -13,6 +13,7 @@ from mover.state import RedisStorage
 #     assert isinstance(res[0], RealDictRow), f"0 Element not RealDictRow, type = {type(res[0])}"
 
 
+@pytest.mark.parametrize("redis_db", [0])
 @pytest.mark.parametrize("table_name", ["film_work", "person", "genre"])
 def test_extract_modified_date(pg_extractor: Extract, table_name: str):
     res = pg_extractor.get_last_modified(table=table_name)
@@ -20,6 +21,7 @@ def test_extract_modified_date(pg_extractor: Extract, table_name: str):
     assert isinstance(res, date), "Last modified not date"
 
 
+@pytest.mark.parametrize("redis_db", [0])
 @pytest.mark.usefixtures("_clean_redis")
 @pytest.mark.parametrize("table_name", ["film_work", "person", "genre"])
 def test_extract_data(pg_extractor: Extract, redis_storage: RedisStorage, table_name: str):
