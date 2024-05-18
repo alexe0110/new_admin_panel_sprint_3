@@ -42,10 +42,7 @@ class Enricher:
     def proceed(self) -> None:
         if self.state.state.get("pkeys"):
             logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
-            self.enrich_data(
-                self.state.state['table'],
-                self.state.state['pkeys']
-            )
+            self.enrich_data(self.state.state["table"], self.state.state["pkeys"])
 
     def set_state(self, **kwargs) -> None:
         for key, value in kwargs.items():

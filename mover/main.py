@@ -13,7 +13,7 @@ import time
 
 from redis import Redis
 
-from mover.components import Enricher, Extract
+from mover.components import Enricher, Extract, Transform
 from mover.config import Settings
 from mover.my_log import logger
 
@@ -23,15 +23,20 @@ settings = Settings()
 def main():
     logger.info("Prepare to ETL")
 
+    transform = Transform(
+        redis_connection=Redis(**settings.redis_settings.model_dump(), db=2),
+        next_handler=lambda movies_for_es: print(
+            "Lambda func form main.py, если это текст появился Transform тригернулся на новую запись и "
+            "превратил ее в объект для эластика:",
+            len(movies_for_es),
+            movies_for_es,
+        ),
+    )
+
     enricher = Enricher(
         pg_settings=settings.pg.model_dump(),
         redis_connection=Redis(**settings.redis_settings.model_dump(), db=1),
-        next_handler=lambda result: print(
-            "Lambda func form main.py, если это текст появился значит Enricher тригернулся на новую запись:",
-            len(result),
-            "штук",
-            result,
-        ),
+        next_handler=transform.transform_data,
     )
 
     extractor = Extract(
