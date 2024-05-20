@@ -61,7 +61,7 @@ class Transform:
         self.set_state(data=movies)
         movies_for_es = []
 
-        for movie_id, movie in enumerate(movies):
+        for _, movie in enumerate(movies):
             try:
                 movies_for_es.append(
                     Movie(
@@ -72,7 +72,7 @@ class Transform:
                         directors=self.persons_by_role(movie["persons"], "director"),
                         actors=self.persons_by_role(movie["persons"], "actor"),
                         writers=self.persons_by_role(movie["persons"], "writer"),
-                    ).dict(by_alias=True)
+                    ).dict()
                 )
 
             except ValueError:

@@ -14,17 +14,9 @@ ESLoader должен
 """
 
 from elasticsearch import Elasticsearch
-from redis import Redis
-
-from mover.state import RedisStorage, State
-
-from collections.abc import Callable
 from elasticsearch.helpers import bulk
-
-from psycopg2.extras import RealDictRow
 from redis import Redis
 
-from mover.es_models import Movie, Person
 from mover.my_log import logger
 from mover.state import RedisStorage, State
 
@@ -41,27 +33,30 @@ class ESLoader:
         # self.proceed()
 
     def proceed_by_cache(self):
-        if data_cache := self.state.state.get('data'):
-            logger.debug(f'Proceed by cache: {data_cache}')
+        if data_cache := self.state.state.get("data"):
+            logger.debug(f"Proceed by cache: {data_cache}")
             self.bulk_upload(data_cache)
 
-    def convert_to_bulk_format(self, data: dict) -> dict:
-        pass
+    def convert_to_bulk(self, data: dict) -> dict:
+        return {"_id": data.get("id"), "_index": self.index, "_source": data}
 
     def bulk_upload(self, data: list[dict]):
         """
         Метода для загрузки данных в ES в булк формате.
         """
-        logger.debug(f'Bulk upload: {data}')
+        logger.debug(f"Bulk upload: {data}")
         result = bulk(self.es_client, data, index=self.index)
-        print('\tResult:', result)
+        print("\t\t\tResult:", result)
 
     def process(self, data: dict):
         """
         Подготовка данных для загрузки в ES: сохранение в редис и перевод в булк формат,
         с последующей передачей в метод bulk_upload
         """
-        self.state.set_state(key='data', value=data)
-        print('\t data to load', data)
-        # bulk_data = []
-        # self.bulk_upload(data)
+        self.state.set_state(key="data", value=data)
+        print("\t data to load", data)
+        bulk_data = [self.convert_to_bulk(i) for i in data]
+        print("\t\tbulk data", bulk_data)
+
+        self.bulk_upload(bulk_data)
+        self.state.set_state(key="data", value=None)

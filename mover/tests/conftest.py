@@ -1,7 +1,7 @@
 import pytest
 from redis import Redis
 
-from mover.components import Enricher, Extract, Transform, ESLoader
+from mover.components import Enricher, ESLoader, Extract, Transform
 from mover.config import Settings
 from mover.state import RedisStorage
 
@@ -51,8 +51,8 @@ def loader(redis_connection):
     return ESLoader(
         redis_connection=redis_connection,
         elastic_host=test_settings.es.es_host,
-        index=test_settings.es.index,
-        schema=test_settings.es.schema,
+        index=test_settings.es.es_index,
+        schema=test_settings.es.es_schema,
     )
 
 

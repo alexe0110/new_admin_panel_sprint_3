@@ -13,7 +13,7 @@ import time
 
 from redis import Redis
 
-from mover.components import Enricher, Extract, Transform, ESLoader
+from mover.components import Enricher, ESLoader, Extract, Transform
 from mover.config import Settings
 from mover.my_log import logger
 
@@ -26,8 +26,8 @@ def main():
     loader = ESLoader(
         redis_connection=Redis(**settings.redis_settings.model_dump(), db=3),
         elastic_host=settings.es.es_host,
-        index=settings.es.index,
-        schema=settings.es.schema,
+        index=settings.es.es_index,
+        schema=settings.es.es_schema,
     )
 
     transform = Transform(

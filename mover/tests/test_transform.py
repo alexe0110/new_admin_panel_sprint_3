@@ -41,5 +41,3 @@ def test_transform_data(transformer: Transform, redis_storage: RedisStorage, red
     assert (
         redis_result["data"] is None
     ), '"data" должен создаться в редисе, хоть останется пустым после выоплненяи трансформ'
-
-

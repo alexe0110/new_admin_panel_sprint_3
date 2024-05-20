@@ -1,6 +1,8 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
-import elastic_schema
+
+from mover import elastic_schema
+
 
 class PGSettings(BaseSettings):
     host: str = Field(default="127.0.0.1")
@@ -8,7 +10,7 @@ class PGSettings(BaseSettings):
     dbname: str = Field(default="movies_database")
     user: str = Field(default="app")
     password: str = Field(default="123qwe")
-    connect_timeout: int = 3
+    connect_timeout: int = 11
 
     class Config:
         env_prefix = "DB_"
@@ -23,9 +25,9 @@ class RedisSettings(BaseSettings):
 
 
 class ElasticSettings(BaseSettings):
-    es_host: str = 'http://localhost:9200'
-    index: str = 'movies'
-    schema: dict = elastic_schema.movies
+    es_host: str = "http://localhost:9200"
+    es_index: str = "movies"
+    es_schema: dict = elastic_schema.movies
 
     class Config:
         env_prefix = "ES_"
