@@ -1,7 +1,7 @@
 import pytest
 from redis import Redis
 
-from mover.components import Enricher, Extract, Transform
+from mover.components import Enricher, Extract, Transform, ESLoader
 from mover.config import Settings
 from mover.state import RedisStorage
 
@@ -43,6 +43,16 @@ def transformer(redis_connection):
     return Transform(
         redis_connection=redis_connection,
         next_handler=lambda movies_for_es: print("\nTest Transformer handler, with movies_for_es:", movies_for_es),
+    )
+
+
+@pytest.fixture()
+def loader(redis_connection):
+    return ESLoader(
+        redis_connection=redis_connection,
+        elastic_host=test_settings.es.es_host,
+        index=test_settings.es.index,
+        schema=test_settings.es.schema,
     )
 
 

@@ -1,6 +1,6 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
-
+import elastic_schema
 
 class PGSettings(BaseSettings):
     host: str = Field(default="127.0.0.1")
@@ -22,7 +22,17 @@ class RedisSettings(BaseSettings):
         env_prefix = "REDIS_"
 
 
+class ElasticSettings(BaseSettings):
+    es_host: str = 'http://localhost:9200'
+    index: str = 'movies'
+    schema: dict = elastic_schema.movies
+
+    class Config:
+        env_prefix = "ES_"
+
+
 class Settings(BaseSettings):
     pg: PGSettings = PGSettings()
+    es: ElasticSettings = ElasticSettings()
     redis_settings: RedisSettings = RedisSettings()
     tables: list = ["film_work", "person", "genre"]
