@@ -1,5 +1,4 @@
 services:
-#  docker run -d -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" elasticsearch:8.6.2
   els:
     image: elasticsearch:8.6.2
     environment:
@@ -7,6 +6,8 @@ services:
       xpack.security.enabled: "false"
     ports:
       - "9200:9200"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
 
   pg_db:
     image: postgres:16
@@ -23,3 +24,6 @@ services:
     image: redis
     ports:
       - "6379:6379"
+
+volumes:
+  elastic_data:

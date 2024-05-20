@@ -1,5 +1,3 @@
-"""SQL query templates."""
-
 get_modified_records = """
     SELECT id, modified FROM {table}
     WHERE modified > %(modified)s
@@ -7,7 +5,7 @@ get_modified_records = """
     LIMIT %(page_size)s
 """
 
-get_movie_info_by_id = """
+get_additional_info = """
     SELECT
         film_work.id as id,
         film_work.rating as imdb_rating,

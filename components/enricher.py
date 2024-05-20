@@ -10,7 +10,7 @@ from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
 from utils.logger import logger
-from utils.sql_templates import get_movie_info_by_id
+from utils.sql_templates import get_additional_info
 from utils.state import RedisStorage, State
 
 
@@ -44,7 +44,7 @@ class Enricher:
             self.state.set_state(key=key, value=value)
 
     def enrich_data(self, where_clause_table: str, pkeys: list) -> None:
-        query = SQL(get_movie_info_by_id).format(where_clause_table=Identifier(where_clause_table))
+        query = SQL(get_additional_info).format(where_clause_table=Identifier(where_clause_table))
 
         self.cursor.execute(
             query,

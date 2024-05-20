@@ -47,11 +47,11 @@ def main():
         next_handler=enricher.enrich_data,
     )
 
-    logger.debug("Start consume")
+    logger.info("Start consume")
     while True:
         for table in settings.tables:
             extractor.extract_data(table)
-            time.sleep(1)
+            time.sleep(0.5)
 
 
 if __name__ == "__main__":
