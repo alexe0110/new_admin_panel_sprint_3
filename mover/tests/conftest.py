@@ -3,7 +3,7 @@ from redis import Redis
 
 from mover.components import Enricher, ESLoader, Extract, Transform
 from mover.config import Settings
-from mover.state import RedisStorage
+from mover.utils.state import RedisStorage
 
 test_settings = Settings()
 

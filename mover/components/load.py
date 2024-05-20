@@ -17,8 +17,8 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from redis import Redis
 
-from mover.logger import logger
-from mover.state import RedisStorage, State
+from mover.utils.logger import logger
+from mover.utils.state import RedisStorage, State
 
 
 class ESLoader:
@@ -46,23 +46,18 @@ class ESLoader:
     def convert_to_bulk(self, data: dict) -> dict:
         return {"_id": data.get("id"), "_index": self.index, "_source": data}
 
-    def bulk_upload(self, data: list[dict]):
+    def bulk_upload(self, data: dict):
         """
         Метода для загрузки данных в ES в булк формате.
         """
         logger.debug(f"Bulk upload: {data}")
-        result = bulk(self.es_client, data, index=self.index)
-        print("\t\t\tResult:", result)
 
-    def process(self, data: dict):
-        """
-        Подготовка данных для загрузки в ES: сохранение в редис и перевод в булк формат,
-        с последующей передачей в метод bulk_upload
-        """
         self.state.set_state(key="data", value=data)
-        print("\t data to load", data)
         bulk_data = [self.convert_to_bulk(i) for i in data]
-        print("\t\tbulk data", bulk_data)
 
-        self.bulk_upload(bulk_data)
+        try:
+            bulk(self.es_client, bulk_data, index=self.index)
+        except Exception as e:
+            logger.exception(f"Error during bulk upload: {e}")
+
         self.state.set_state(key="data", value=None)

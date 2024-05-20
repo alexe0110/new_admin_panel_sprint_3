@@ -7,9 +7,9 @@ from collections.abc import Callable
 from psycopg2.extras import RealDictRow
 from redis import Redis
 
-from mover.es_models import Movie, Person
-from mover.logger import logger
-from mover.state import RedisStorage, State
+from mover.utils.es_models import Movie, Person
+from mover.utils.logger import logger
+from mover.utils.state import RedisStorage, State
 
 
 class Transform:

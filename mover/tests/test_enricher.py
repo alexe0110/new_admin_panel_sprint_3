@@ -1,7 +1,7 @@
 import pytest
 
 from mover.components.enricher import Enricher
-from mover.state import RedisStorage
+from mover.utils.state import RedisStorage
 
 
 @pytest.mark.parametrize("table_name", ["film_work", "person", "genre"])

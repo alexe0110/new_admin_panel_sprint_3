@@ -4,7 +4,7 @@ import pytest
 from psycopg2.extras import RealDictRow
 
 from mover.components import Transform
-from mover.state import RedisStorage
+from mover.utils.state import RedisStorage
 
 test_data = [
     RealDictRow(

@@ -16,7 +16,7 @@ plint:
 	$(VENV)/bin/ruff check $(LINT_DIRS) --fix --show-fixes
 	$(VENV)/bin/mypy --install-types --non-interactive --namespace-packages \
 	    --explicit-package-bases $(LINT_DIRS) --disable-error-code import-untyped \
-	    --exclude movies/migrations --exclude mover/state --exclude mover/tests
+	    --exclude movies/migrations --exclude mover/utils/state --exclude mover/tests
 
 
 docker-run:
