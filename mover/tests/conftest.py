@@ -50,7 +50,7 @@ def transformer(redis_connection):
 def loader(redis_connection):
     return ESLoader(
         redis_connection=redis_connection,
-        elastic_host=test_settings.es.es_host,
+        elastic_host=test_settings.es.es_addr,
         index=test_settings.es.es_index,
         schema=test_settings.es.es_schema,
     )

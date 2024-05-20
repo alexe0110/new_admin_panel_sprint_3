@@ -14,22 +14,17 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
-from mover.my_log import logger
+from mover.logger import logger
 from mover.state import RedisStorage, State
 from mover.utils.sql_templates import get_modified_records
 
 
 class Extract:
     def _connect(self) -> None:
-        logger.debug(
-            "Connecting to the DB %s. Timeout %s",
-            self.pg_settings["dbname"],
-            self.pg_settings["connect_timeout"],
-        )
         self.connection = psycopg2.connect(**self.pg_settings)
         self.connection.set_session(readonly=True, autocommit=True)
 
-        logger.debug("Connected to the DB %s", self.pg_settings["dbname"])
+        logger.debug(f"Extract connect to db {self.pg_settings['dbname']}")
 
     def __init__(self, pg_settings: dict, redis_connection: Redis, next_handler: Callable):
         self.pg_settings = pg_settings
@@ -49,7 +44,7 @@ class Extract:
         return datetime.date.min
 
     def extract_data(self, table: str, schema: str = "content", size: int = 100) -> None:
-        logger.debug("Getting modified from %s", table)
+        logger.debug(f"Getting data from {table}")
 
         query = SQL(get_modified_records).format(
             table=Identifier(schema, table),
@@ -58,7 +53,6 @@ class Extract:
         self.cursor.execute(query, {"modified": self.get_last_modified(table), "page_size": size})
         result = self.cursor.fetchall()
 
-        logger.debug("Got %s records from table %s", len(result), table)
         if result:
             modified = result[-1]["modified"]
             self.state.set_state(key=table, value=modified)

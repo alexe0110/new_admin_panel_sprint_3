@@ -17,7 +17,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from redis import Redis
 
-from mover.my_log import logger
+from mover.logger import logger
 from mover.state import RedisStorage, State
 
 

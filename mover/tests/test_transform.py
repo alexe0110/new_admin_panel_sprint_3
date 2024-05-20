@@ -32,7 +32,6 @@ test_data = [
 ]
 
 
-@pytest.mark.kek()
 @pytest.mark.parametrize("redis_db", [2])
 def test_transform_data(transformer: Transform, redis_storage: RedisStorage, redis_db: int):
     transformer.transform_data(test_data)

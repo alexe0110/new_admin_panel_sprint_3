@@ -1,7 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-from mover import elastic_schema
+from mover import es_schema
 
 
 class PGSettings(BaseSettings):
@@ -25,9 +25,9 @@ class RedisSettings(BaseSettings):
 
 
 class ElasticSettings(BaseSettings):
-    es_host: str = "http://localhost:9200"
+    es_addr: str = Field(default="http://127.0.0.1:9200")
     es_index: str = "movies"
-    es_schema: dict = elastic_schema.movies
+    es_schema: dict = es_schema.movies
 
     class Config:
         env_prefix = "ES_"

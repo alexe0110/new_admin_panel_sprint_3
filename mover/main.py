@@ -15,7 +15,7 @@ from redis import Redis
 
 from mover.components import Enricher, ESLoader, Extract, Transform
 from mover.config import Settings
-from mover.my_log import logger
+from mover.logger import logger
 
 settings = Settings()
 
@@ -25,7 +25,7 @@ def main():
 
     loader = ESLoader(
         redis_connection=Redis(**settings.redis_settings.model_dump(), db=3),
-        elastic_host=settings.es.es_host,
+        elastic_host=settings.es.es_addr,
         index=settings.es.es_index,
         schema=settings.es.es_schema,
     )
@@ -48,6 +48,7 @@ def main():
     )
 
     while True:
+        logger.debug("Start consume")
         for table in settings.tables:
             extractor.extract_data(table)
             time.sleep(1)

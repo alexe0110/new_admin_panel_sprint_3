@@ -8,7 +8,7 @@ from psycopg2.extras import RealDictRow
 from redis import Redis
 
 from mover.es_models import Movie, Person
-from mover.my_log import logger
+from mover.logger import logger
 from mover.state import RedisStorage, State
 
 
@@ -27,7 +27,7 @@ class Transform:
         Если есть, то отправляет их на переработку в данне для эластика методу transform_data
         """
         if data_cache := self.state.state.get("data"):
-            logger.debug("Data to proceed %s", data_cache)
+            logger.debug(f"Data to proceed {data_cache}")
             self.transform_data(movies=data_cache)
 
     def get_person_names(self, persons: dict, role: str | None = None) -> list:

@@ -9,22 +9,17 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
-from mover.my_log import logger
+from mover.logger import logger
 from mover.state import RedisStorage, State
 from mover.utils.sql_templates import get_movie_info_by_id
 
 
 class Enricher:
     def _connect(self) -> None:
-        logger.debug(
-            "Enricher connecting to the DB %s. Timeout %s",
-            self.pg_settings["dbname"],
-            self.pg_settings["connect_timeout"],
-        )
         self.connection = psycopg2.connect(**self.pg_settings)
         self.connection.set_session(readonly=True, autocommit=True)
 
-        logger.debug("Enricher connected to the DB %s", self.pg_settings["dbname"])
+        logger.debug(f"Enricher connect to db {self.pg_settings['dbname']}")
 
     def __init__(self, pg_settings: dict, redis_connection: Redis, next_handler: Callable, size: int = 100):
         self.pg_settings = pg_settings
@@ -40,8 +35,8 @@ class Enricher:
         self.proceed()
 
     def proceed(self) -> None:
-        if self.state.state.get("pkeys"):
-            logger.debug("Data to proceed %s", self.state.state.get("pkeys"))
+        if data_cache := self.state.state.get("pkeys"):
+            logger.debug(f"Proceed by cache: {data_cache}")
             self.enrich_data(self.state.state["table"], self.state.state["pkeys"])
 
     def set_state(self, **kwargs) -> None:
@@ -64,7 +59,7 @@ class Enricher:
                 page_size=self.size,
             )
 
-            logger.debug("Got additional info for %s  movies", len(result))
+            logger.debug(f"Enrich data for {len(result)}  movies")
             self.next_handler(result)
 
         self.set_state(
