@@ -2,8 +2,8 @@ from datetime import date, datetime
 
 import pytest
 
-from mover.components.extract import Extract
-from mover.utils.state import RedisStorage
+from components.extract import Extract
+from utils.state import RedisStorage
 
 #
 # def test_extract_kek(pg_extractor: Extract):

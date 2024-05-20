@@ -1,9 +1,9 @@
 import pytest
 from redis import Redis
 
-from mover.components import Enricher, ESLoader, Extract, Transform
-from mover.config import Settings
-from mover.utils.state import RedisStorage
+from components import Enricher, ESLoader, Extract, Transform
+from config import Settings
+from utils.state import RedisStorage
 
 test_settings = Settings()
 

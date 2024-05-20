@@ -17,8 +17,8 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from redis import Redis
 
-from mover.utils.logger import logger
-from mover.utils.state import RedisStorage, State
+from utils.logger import logger
+from utils.state import RedisStorage, State
 
 
 class ESLoader:

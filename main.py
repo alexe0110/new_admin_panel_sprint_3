@@ -13,9 +13,9 @@ import time
 
 from redis import Redis
 
-from mover.components import Enricher, ESLoader, Extract, Transform
-from mover.config import Settings
-from mover.utils.logger import logger
+from components import Enricher, ESLoader, Extract, Transform
+from config import Settings
+from utils.logger import logger
 
 settings = Settings()
 

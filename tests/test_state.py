@@ -1,6 +1,6 @@
 import pytest
 
-from mover.utils.state import RedisStorage
+from utils.state import RedisStorage
 
 
 @pytest.mark.parametrize("redis_db", [0])

@@ -1,7 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-from mover.utils import es_schema
+from utils import es_schema
 
 
 class PGSettings(BaseSettings):

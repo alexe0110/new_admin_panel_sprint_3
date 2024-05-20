@@ -3,8 +3,8 @@ import datetime
 import pytest
 from psycopg2.extras import RealDictRow
 
-from mover.components import Transform
-from mover.utils.state import RedisStorage
+from components import Transform
+from utils.state import RedisStorage
 
 test_data = [
     RealDictRow(

@@ -1,6 +1,6 @@
 VENV ?= .venv
 LINE_LENGTH ?= 120
-LINT_DIRS = mover
+LINT_DIRS = .
 
 init:
 	python3.11 -m venv .venv
@@ -16,7 +16,7 @@ plint:
 	$(VENV)/bin/ruff check $(LINT_DIRS) --fix --show-fixes
 	$(VENV)/bin/mypy --install-types --non-interactive --namespace-packages \
 	    --explicit-package-bases $(LINT_DIRS) --disable-error-code import-untyped \
-	    --exclude movies/migrations --exclude mover/utils/state --exclude mover/tests
+	    --exclude utils/state --exclude tests
 
 
 docker-run:

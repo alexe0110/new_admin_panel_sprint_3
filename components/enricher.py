@@ -9,9 +9,9 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
-from mover.utils.logger import logger
-from mover.utils.sql_templates import get_movie_info_by_id
-from mover.utils.state import RedisStorage, State
+from utils.logger import logger
+from utils.sql_templates import get_movie_info_by_id
+from utils.state import RedisStorage, State
 
 
 class Enricher:
