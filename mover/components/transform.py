@@ -26,9 +26,9 @@ class Transform:
         вида `[RealDictRow([('id', 'a9b29ca3-adf2-46b9-8455-9dccda64c400'), ('imdb_rating', 6.0),...`
         Если есть, то отправляет их на переработку в данне для эластика методу transform_data
         """
-        if self.state.state.get("data"):
-            logger.debug("Data to proceed %s", self.state.state.get("data"))
-            self.transform_data(movies=self.state.state.get("data"))
+        if data_cache := self.state.state.get("data"):
+            logger.debug("Data to proceed %s", data_cache)
+            self.transform_data(movies=data_cache)
 
     def get_person_names(self, persons: dict, role: str | None = None) -> list:
         """

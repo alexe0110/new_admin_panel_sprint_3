@@ -22,7 +22,7 @@ from mover.state import RedisStorage, State
 
 
 class ESLoader:
-    def __init__(self, redis_connection: Redis, elastic_host: str, index: str, schema: dict = None):
+    def __init__(self, redis_connection: Redis, elastic_host: str, index: str, schema: dict):
         self.es_client = Elasticsearch(elastic_host)
 
         self.storage = RedisStorage(redis_connection)
@@ -30,7 +30,13 @@ class ESLoader:
 
         self.index = index
 
-        # self.proceed()
+        self.create_index(index, schema)
+        self.proceed_by_cache()
+
+    def create_index(self, index: str, schema: dict) -> None:
+        if not self.es_client.indices.exists(index=index):
+            logger.info(f"Index {index} not exists. Creating new one")
+            self.es_client.indices.create(index=index, body=schema)
 
     def proceed_by_cache(self):
         if data_cache := self.state.state.get("data"):
