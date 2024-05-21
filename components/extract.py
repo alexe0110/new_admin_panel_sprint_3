@@ -14,7 +14,7 @@ from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
 from utils.logger import logger
-from utils.pg_utils import PGConnection
+from utils.pg_connect import PGConnection
 from utils.sql_templates import get_modified_records
 from utils.state import RedisStorage, State
 
