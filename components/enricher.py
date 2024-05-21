@@ -4,26 +4,20 @@ Enricher добавляет инфу о фильме и передает рез�
 
 from collections.abc import Callable
 
-import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.sql import SQL, Identifier
 from redis import Redis
 
 from utils.logger import logger
+from utils.pg_utils import PGConnection
 from utils.sql_templates import get_additional_info
 from utils.state import RedisStorage, State
 
 
-class Enricher:
-    def _connect(self) -> None:
-        self.connection = psycopg2.connect(**self.pg_settings)
-        self.connection.set_session(readonly=True, autocommit=True)
-
-        logger.debug(f"Enricher connect to db {self.pg_settings['dbname']}")
-
+class Enricher(PGConnection):
     def __init__(self, pg_settings: dict, redis_connection: Redis, next_handler: Callable, size: int = 100):
         self.pg_settings = pg_settings
-        self._connect()
+        self._connect(pg_settings)
         self.cursor = self.connection.cursor(cursor_factory=RealDictCursor)
 
         self.storage = RedisStorage(redis_connection)
