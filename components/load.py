@@ -15,10 +15,12 @@ ESLoader должен
 
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+from elastic_transport import ConnectionTimeout
 from redis import Redis
 
 from utils.logger import logger
 from utils.state import RedisStorage, State
+from utils.my_backoff import backoff
 
 
 class ESLoader:
@@ -33,6 +35,8 @@ class ESLoader:
         self.create_index(index, schema)
         self.proceed_by_cache()
 
+    # @backoff(exceptions=(ConnectionResetError, ConnectionTimeout))
+    @backoff(exceptions=(ConnectionTimeout,))
     def create_index(self, index: str, schema: dict) -> None:
         if not self.es_client.indices.exists(index=index):
             logger.info(f"Index {index} not exists. Creating new one")
@@ -46,6 +50,8 @@ class ESLoader:
     def convert_to_bulk(self, data: dict) -> dict:
         return {"_id": data.get("id"), "_index": self.index, "_source": data}
 
+    # @backoff(exceptions=(ConnectionResetError, ConnectionTimeout))
+    @backoff(exceptions=(ConnectionTimeout,))
     def bulk_upload(self, data: dict):
         """
         Метода для загрузки данных в ES в булк формате.
@@ -58,6 +64,7 @@ class ESLoader:
         try:
             bulk(self.es_client, bulk_data, index=self.index)
         except Exception as e:
-            logger.exception(f"Error during bulk upload: {e}")
+            logger.error(f"Error during bulk upload")
+            raise e
 
         self.state.set_state(key="data", value=None)

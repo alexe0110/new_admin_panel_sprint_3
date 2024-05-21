@@ -1,5 +1,6 @@
 import time
 from functools import wraps
+from utils.logger import logger
 
 
 def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: int = 10, exceptions=(Exception,)):
@@ -21,6 +22,7 @@ def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: i
                 try:
                     return func(*args, **kwargs)
                 except exceptions:
+                    logger.warning(f'Try to execute: {func}')
                     sleep_time = start_sleep_time * (factor**n)
                     if sleep_time > border_sleep_time:
                         sleep_time = border_sleep_time
