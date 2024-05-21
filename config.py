@@ -17,16 +17,16 @@ class PGSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    host: str = Field(default="127.0.0.1")
-    port: int = Field(default=6379)
+    host: str
+    port: int
 
     class Config:
         env_prefix = "REDIS_"
 
 
 class ElasticSettings(BaseSettings):
-    addr: str = Field(default="http://127.0.0.1:9200")
-    index: str = Field(default="movies")
+    addr: str
+    index: str
     index_schema: dict = es_schema.movies_schema
 
     class Config:

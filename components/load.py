@@ -13,7 +13,7 @@ ESLoader должен
     # 'id': 'a5a8f573-3cee-4ccc-8a2b-91cb9f55250a', 'name': 'George Lucas'}], 'writers': []}]
 """
 
-from elastic_transport import ConnectionTimeout
+from elastic_transport import ConnectionTimeout, ConnectionError
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from redis import Redis
@@ -35,7 +35,7 @@ class ESLoader:
         self.create_index(index, schema)
         self.proceed_by_cache()
 
-    @backoff(exceptions=(ConnectionTimeout,))
+    @backoff(exceptions=(ConnectionTimeout,ConnectionError))
     def create_index(self, index: str, schema: dict) -> None:
         if not self.es_client.indices.exists(index=index):
             logger.info(f"Index {index} not exists. Creating new one")
@@ -49,7 +49,7 @@ class ESLoader:
     def convert_to_bulk(self, data: dict) -> dict:
         return {"_id": data.get("id"), "_index": self.index, "_source": data}
 
-    @backoff(exceptions=(ConnectionTimeout,))
+    @backoff(exceptions=(ConnectionTimeout,ConnectionError))
     def bulk_upload(self, data: dict):
         """
         Метода для загрузки данных в ES в булк формате.
