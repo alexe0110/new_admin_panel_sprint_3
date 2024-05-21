@@ -25,9 +25,9 @@ class RedisSettings(BaseSettings):
 
 
 class ElasticSettings(BaseSettings):
-    es_addr: str = Field(default="http://127.0.0.1:9200")
-    es_index: str = "movies"
-    es_schema: dict = es_schema.movies_schema
+    addr: str = Field(default="http://127.0.0.1:9200")
+    index: str = Field(default="movies")
+    index_schema: dict = es_schema.movies_schema
 
     class Config:
         env_prefix = "ES_"

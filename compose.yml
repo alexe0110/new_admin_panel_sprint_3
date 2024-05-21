@@ -1,4 +1,11 @@
 services:
+  etl:
+    build:
+      context: .
+      dockerfile: etl.Dockerfile
+    env_file:
+      - docker.env
+
   els:
     image: elasticsearch:8.6.2
     environment:

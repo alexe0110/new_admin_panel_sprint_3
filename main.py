@@ -25,9 +25,9 @@ def main():
 
     loader = ESLoader(
         redis_connection=Redis(**settings.redis_settings.model_dump(), db=3),
-        elastic_host=settings.es.es_addr,
-        index=settings.es.es_index,
-        schema=settings.es.es_schema,
+        elastic_host=settings.es.addr,
+        index=settings.es.index,
+        schema=settings.es.index_schema,
     )
 
     transform = Transform(
