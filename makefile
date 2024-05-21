@@ -20,4 +20,8 @@ plint:
 
 
 docker-run:
-	docker-compose up -d --build
+	docker compose up -d --build
+
+local-run:
+	docker compose up redis pg_db els -d --build
+	$(VENV)/bin/python main.py

@@ -5,12 +5,12 @@ from utils import es_schema
 
 
 class PGSettings(BaseSettings):
-    host: str = Field(default="127.0.0.1")
-    port: str = Field(default="5432")
-    dbname: str = Field(default="movies_database")
-    user: str = Field(default="app")
-    password: str = Field(default="123qwe")
-    connect_timeout: int = 11
+    host: str
+    port: str
+    dbname: str
+    user: str
+    password: str
+    connect_timeout: int
 
     class Config:
         env_prefix = "DB_"

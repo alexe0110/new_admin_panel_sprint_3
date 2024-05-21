@@ -54,7 +54,7 @@ class Extract:
         result = self.cursor.fetchall()
 
         if result:
-            logger.info(f"Detect modified records{len(result)}")
+            logger.info(f"Detect modified {len(result)} records")
 
             modified = result[-1]["modified"]
             self.state.set_state(key=table, value=modified)
