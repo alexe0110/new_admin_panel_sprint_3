@@ -4,7 +4,13 @@ from functools import wraps
 from utils.logger import logger
 
 
-def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: int = 10, exceptions=(Exception,)):
+def backoff(
+    start_sleep_time: float = 0.1,
+    factor: int = 2,
+    border_sleep_time: int = 10,
+    exceptions=(Exception,),
+    attempts: int = 5,
+):
     """
     Формула:
         t = start_sleep_time * (factor ^ n), если t < border_sleep_time
@@ -19,7 +25,7 @@ def backoff(start_sleep_time: float = 0.1, factor: int = 2, border_sleep_time: i
         @wraps(func)
         def inner(*args, **kwargs):
             n = 0
-            while True:
+            while n < attempts:
                 try:
                     return func(*args, **kwargs)
                 except exceptions:

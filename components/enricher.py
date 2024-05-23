@@ -10,7 +10,7 @@ from redis import Redis
 
 from utils.logger import logger
 from utils.pg_connect import PGConnection
-from utils.sql_templates import get_additional_info
+from utils.sql_templates import ADDITIONAL_INFO_SQL
 from utils.state import RedisStorage, State
 
 
@@ -38,7 +38,7 @@ class Enricher(PGConnection):
             self.state.set_state(key=key, value=value)
 
     def enrich_data(self, where_clause_table: str, pkeys: list) -> None:
-        query = SQL(get_additional_info).format(where_clause_table=Identifier(where_clause_table))
+        query = SQL(ADDITIONAL_INFO_SQL).format(where_clause_table=Identifier(where_clause_table))
 
         self.cursor.execute(
             query,
