@@ -12,7 +12,7 @@ class PGSettings(BaseSettings):
     connect_timeout: int
 
     class Config:
-        env_prefix = "DB_"
+        env_prefix = "POSTGRES_"
 
 
 class RedisSettings(BaseSettings):
