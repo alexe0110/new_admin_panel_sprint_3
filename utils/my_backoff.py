@@ -15,6 +15,7 @@ def backoff(
     Формула:
         t = start_sleep_time * (factor ^ n), если t < border_sleep_time
         t = border_sleep_time, иначе
+    :param attempts: сколько попыток делать
     :param start_sleep_time: начальное время ожидания
     :param factor: во сколько раз нужно увеличивать время ожидания на каждой итерации
     :param border_sleep_time: максимальное время ожидания

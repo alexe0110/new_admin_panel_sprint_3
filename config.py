@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 from utils import es_schema
@@ -37,3 +38,4 @@ class Settings(BaseSettings):
     es: ElasticSettings = ElasticSettings()
     redis_settings: RedisSettings = RedisSettings()
     tables: list = ["film_work", "person", "genre"]
+    delay: float = Field(default=0.5, env="DELAY")
