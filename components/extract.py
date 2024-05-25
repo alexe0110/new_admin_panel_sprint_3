@@ -15,7 +15,7 @@ from redis import Redis
 
 from utils.logger import logger
 from utils.pg_connect import PGConnection
-from utils.sql_templates import get_modified_records
+from utils.sql_templates import MODIFIED_RECORDS_SQL
 from utils.state import RedisStorage, State
 
 
@@ -40,7 +40,7 @@ class Extract(PGConnection):
     def extract_data(self, table: str, schema: str = "content", size: int = 100) -> None:
         logger.debug(f"Getting data from {table}")
 
-        query = SQL(get_modified_records).format(
+        query = SQL(MODIFIED_RECORDS_SQL).format(
             table=Identifier(schema, table),
         )
 

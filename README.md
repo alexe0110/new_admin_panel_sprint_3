@@ -7,6 +7,12 @@
 ### Окружение:
 
     make init
+    source .venv/bin/activate
+
+Создать и заполнить env файлы
+
+    cp .example.env local.env
+    cp .example.env docker.env
 
 ### Запуск:
 

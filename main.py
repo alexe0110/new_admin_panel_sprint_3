@@ -51,7 +51,7 @@ def main():
     while True:
         for table in settings.tables:
             extractor.extract_data(table)
-            time.sleep(0.5)
+            time.sleep(settings.delay)
 
 
 if __name__ == "__main__":

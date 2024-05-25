@@ -13,7 +13,7 @@ class PGSettings(BaseSettings):
     connect_timeout: int
 
     class Config:
-        env_prefix = "DB_"
+        env_prefix = "POSTGRES_"
 
 
 class RedisSettings(BaseSettings):
@@ -38,3 +38,4 @@ class Settings(BaseSettings):
     es: ElasticSettings = ElasticSettings()
     redis_settings: RedisSettings = RedisSettings()
     tables: list = ["film_work", "person", "genre"]
+    delay: float = Field(default=0.5, env="DELAY")

@@ -1,11 +1,11 @@
-get_modified_records = """
+MODIFIED_RECORDS_SQL = """
     SELECT id, modified FROM {table}
     WHERE modified > %(modified)s
     ORDER BY modified
     LIMIT %(page_size)s
 """
 
-get_additional_info = """
+ADDITIONAL_INFO_SQL = """
     SELECT
         film_work.id as id,
         film_work.rating as imdb_rating,
